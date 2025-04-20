@@ -31,6 +31,9 @@ ALLOWED_HOSTS = ['*']
 
 
 # Application definition
+CSRF_TRUSTED_ORIGINS = [
+     "https://testapp-production-6bea.up.railway.app",
+ ]
 
 INSTALLED_APPS = [
     'django.contrib.admin',
