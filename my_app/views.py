@@ -5,13 +5,13 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
-from django.conf import settings
+# from django.conf import settings
 import os
-import assemblyai as aai
-from google import genai
+# import assemblyai as aai
+# from google import genai
 import yt_dlp
-from .models import BlogPost
-from django.contrib import messages
+# from .models import BlogPost
+# from django.contrib import messages
 
 # Create your views here.
 @login_required
