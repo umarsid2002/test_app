@@ -67,6 +67,8 @@ def generate_blog(request):
 
         # Get YT Title 
         title = yt_title(yt_link)
+        download_mp3(yt_link)
+
         return JsonResponse({'content': title})
 
 def youtube_downloader(request, output_folder="C:/Users/umars/Downloads"):
@@ -84,3 +86,35 @@ def yt_title(url):
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=False)
         return info.get('title', 'Title not found')
+
+def download_mp3(link):
+    FFMPEG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ffmpeg')
+    print(FFMPEG_PATH)
+    MEDIA_FOLDER = "./media"
+    ydl_opts = {
+        'format': 'bestaudio/best',  # Get the best quality audio
+        'postprocessors': [{
+            'key': 'FFmpegExtractAudio',  # Extract audio using FFmpeg
+            'preferredcodec': 'mp3',  # Convert to MP3 format
+            'preferredquality': '192',  # Audio quality
+        }],
+        'outtmpl': os.path.join(MEDIA_FOLDER, '%(title)s.%(ext)s'),  # Save file as video title
+        'ffmpeg_location': FFMPEG_PATH,  # Update this if FFmpeg is not in PATH
+    }
+
+    with yt_dlp.YoutubeDL(ydl_opts) as ydl:
+        info_dict = ydl.extract_info(link, download=True)
+        downloaded_file = ydl.prepare_filename(info_dict)
+
+        
+        # Replace possible formats with .mp3
+        mp3_file_path = downloaded_file.replace('.webm', '.mp3').replace('.m4a', '.mp3')
+        file_path = os.path.abspath(mp3_file_path)  # Get absolute path
+        # base, ext = os.path.splitext(file_path)
+        # abs_path = os.path.abspath(out_file)
+        # base, ext = os.path.splitext(out_file)
+        # newfile = base + '.mp3'
+        # os.rename(file_path, newfile)
+        filename = os.path.basename(file_path)
+        file = './media/' + filename
+        return file
