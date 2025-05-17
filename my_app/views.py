@@ -5,7 +5,7 @@ from django.contrib.auth.decorators import login_required
 from django.views.decorators.csrf import csrf_exempt
 from django.http import JsonResponse
 import json
-# from django.conf import settings
+from django.conf import settings
 import os
 # import assemblyai as aai
 # from google import genai
@@ -68,7 +68,6 @@ def generate_blog(request):
         # Get YT Title 
         title = yt_title(yt_link)
         download_mp3(yt_link)
-
         return JsonResponse({'content': title})
 
 def youtube_downloader(request, output_folder="C:/Users/umars/Downloads"):
@@ -86,9 +85,9 @@ def yt_title(url):
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info = ydl.extract_info(url, download=False)
         return info.get('title', 'Title not found')
-
+    
 def download_mp3(link):
-    FFMPEG_PATH = os.path.join(os.path.dirname(os.path.abspath(__file__)), 'ffmpeg')
+    FFMPEG_PATH = os.path.join(os.path.join(settings.BASE_DIR, 'ffmpeg'))
     print(FFMPEG_PATH)
     MEDIA_FOLDER = "./media"
     ydl_opts = {
