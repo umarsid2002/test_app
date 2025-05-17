@@ -87,10 +87,9 @@ def yt_title(url):
         return info.get('title', 'Title not found')
     
 def download_mp3(link):
-    FFMPEG_PATH = os.path.join(os.path.join(settings.BASE_DIR, 'ffmpeg'))
-    print(FFMPEG_PATH)
     MEDIA_FOLDER = "./media"
     ydl_opts = {
+        'ffmpeg_location': '/usr/bin',  # Default install path on Railway/Debian
         'format': 'bestaudio/best',  # Get the best quality audio
         'postprocessors': [{
             'key': 'FFmpegExtractAudio',  # Extract audio using FFmpeg
@@ -98,7 +97,7 @@ def download_mp3(link):
             'preferredquality': '192',  # Audio quality
         }],
         'outtmpl': os.path.join(MEDIA_FOLDER, '%(title)s.%(ext)s'),  # Save file as video title
-        'ffmpeg_location': FFMPEG_PATH,  # Update this if FFmpeg is not in PATH
+        'ffmpeg_location': '/usr/bin',  # This is important
     }
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
