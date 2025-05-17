@@ -1,0 +1,9 @@
+{
+    "build": {
+      "nixpacksPlan": {
+        "setup": {
+          "aptPackages": ["ffmpeg"]
+        }
+      }
+    }
+  }
