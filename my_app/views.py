@@ -88,31 +88,22 @@ def yt_title(url):
     
 def download_mp3(link):
     MEDIA_FOLDER = "./media"
+    os.makedirs(MEDIA_FOLDER, exist_ok=True)  # Ensure the media folder exists
+
     ydl_opts = {
-        'ffmpeg_location': '/usr/bin',  # Default install path on Railway/Debian
-        'format': 'bestaudio/best',  # Get the best quality audio
+        'format': 'bestaudio/best',
+        'outtmpl': os.path.join(MEDIA_FOLDER, '%(title)s.%(ext)s'),
         'postprocessors': [{
-            'key': 'FFmpegExtractAudio',  # Extract audio using FFmpeg
-            'preferredcodec': 'mp3',  # Convert to MP3 format
-            'preferredquality': '192',  # Audio quality
+            'key': 'FFmpegExtractAudio',
+            'preferredcodec': 'mp3',
+            'preferredquality': '192',
         }],
-        'outtmpl': os.path.join(MEDIA_FOLDER, '%(title)s.%(ext)s'),  # Save file as video title
-        'ffmpeg_location': '/usr/bin',  # This is important
+        'noplaylist': True,
+        'quiet': True,  # Optional: suppresses output for cleaner logs
     }
 
     with yt_dlp.YoutubeDL(ydl_opts) as ydl:
         info_dict = ydl.extract_info(link, download=True)
-        downloaded_file = ydl.prepare_filename(info_dict)
-
-        
-        # Replace possible formats with .mp3
-        mp3_file_path = downloaded_file.replace('.webm', '.mp3').replace('.m4a', '.mp3')
-        file_path = os.path.abspath(mp3_file_path)  # Get absolute path
-        # base, ext = os.path.splitext(file_path)
-        # abs_path = os.path.abspath(out_file)
-        # base, ext = os.path.splitext(out_file)
-        # newfile = base + '.mp3'
-        # os.rename(file_path, newfile)
-        filename = os.path.basename(file_path)
-        file = './media/' + filename
-        return file
+        title = info_dict.get('title', 'audio')
+        mp3_file_path = os.path.join(MEDIA_FOLDER, f"{title}.mp3")
+        return os.path.abspath(mp3_file_path)
